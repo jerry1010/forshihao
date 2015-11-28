@@ -9,7 +9,7 @@ void drawPoint(int x, int y);
 void onScenceRender();
 
 //石豪你完成下面的函数
-void drawLines(int fromx, int fromy, int tox, int toy);
+void drawLines(int x1, int y1, int x2, int y2);
 
 void drawRect(int minx, int miny, int maxx, int maxy);
 
