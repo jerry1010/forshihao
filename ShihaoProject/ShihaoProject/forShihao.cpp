@@ -5,90 +5,92 @@
 
 void drawLines(int x1, int y1, int x2, int y2)
 {
-	int dx, dy, d, x, y;
+	int x, y;
+	int temp = 0;
+	double d, k;
 	bool vers;
 
-	if ((y2 - y1) < (x2 - x1)) {
+	if (x1 > x2 || y1 > y2) {
+		temp = x1;
+		x1 = x2;
+		x2 = temp;
+		temp = y1;
+		y1 = y2;
+		y2 = temp;
+	}
+
+	if ((y2 - y1) <= (x2 - x1)) {
 		x = x1;
 		y = y1;
-		dx = x2 - x1;
-		dy = y2 - y1;
-		d = dy * 2 - dx;
+		d = 1.0*(y2 - y1) / (x2 - x1);
+		k = 0.0;
 		vers = true;
 	}
 	else {
 		x = x1;
 		y = y1;
-		dx = y2 - y1;
-		dy = x2 - x1;
+		d = 1.0*(x2 - x1) / (y2 - y1);
+		k = 0.0;
 		vers = false;
 	}
 
-	d = 2 * dy - dx;
-
-	drawPoint(x1, y1);
-	if (vers) {
-		++x;
-	}
-	else {
-		++y;
-	}
-
-	while (x != x2) {
-		if (d <= 0) {
-			d += 2 * dy;
-			drawPoint(x, y);
-		}
+	while (x != x2 && x1 != x2 && y1 != y2) {
+		drawPoint(x, y);
+		if ((k += d) <= 0.5)
+			vers ? x++ : y++;
 		else {
-			d += (dy - dx) * 2;
-			if (!vers) {
-				++x;
-			}
-			else {
-				++y;
-			}
-			drawPoint(x, y);
+			x++;
+			y++;
+			k -= 1.0;
 		}
-		if (vers) {
-			++x;
-		}
-		else {
-			++y;
-		}
+	}
+	while (x1 = x2 && y != y2){
+		drawPoint(x, y);
+		y++;
+	}
+	while (y1 = y2 && x != x2) {
+		drawPoint(x, y);
+		x++;
 	}
 
 }
+	
 
 void drawRect(int minx, int miny, int maxx, int maxy)
 {
 	drawLines(minx, miny, maxx, miny);
 	drawLines(maxx, miny, maxx, maxy);
-	drawLines(maxx, maxy, minx, maxy);
-	drawLines(minx, maxy, minx, miny);
+	drawLines(minx, maxy, maxx, maxy);
+	drawLines(minx, miny, minx, maxy);
 }
-void drawCircle(int centerx, int centy, int radius)
+void drawCircle(int x0, int y0, int r)
 {
+	int x = 0;
+	int y = r;
+	int d = 1 - r;
 
+	while (x <= y) {
+		drawPoint(x + x0, y + y0);
+		drawPoint(-x + x0, y + y0);
+		drawPoint(-x + x0, -y + y0);
+		drawPoint(x + x0, -y + y0);
+		drawPoint(y + x0, x + y0);
+		drawPoint(-y + x0, x + y0);
+		drawPoint(-y + x0, -x + y0);
+		drawPoint(y + x0, -x + y0);
+
+		if (d < 0)
+			d += 2 * x + 3;
+		else {
+			d += 2 * (x - y) + 5;
+			y--;
+		}
+		x++;
+	}
 }
-
-
-
-
-
 
 //你可以在这个函数里面画东西试试
 void onScenceRender()
 {
-	drawPoint(0, 0);
-
-	drawPoint(400, 300);
-	drawPoint(401, 300);
-	drawPoint(402, 300);
-	drawPoint(403, 300);
-	drawPoint(404, 300);
-
-	drawPoint(800, 600);
-
-
-	drawRect(200, 100, 600, 300);
+	drawCircle(400, 400, 300);
 }
